@@ -2,7 +2,7 @@
  * @description       : This class is responsible for fetching and updating country data in Salesforce.
  * @author            : ioana-a-chivu
  * @group             : 
- * @last modified on  : 09-08-2024
+ * @last modified on  : 09-09-2024
  * @last modified by  : ioana-a-chivu
 **/
 public class NN_CountryService {
@@ -91,7 +91,7 @@ public class NN_CountryService {
             NN_Alpha3Code__c = country.alpha3Code,
             NN_CapitalCity__c = country.capital,
             NN_Region__c = country.region,
-            NN_RegionalBlocs__c = (country.regionalBlocs != null && country.regionalBlocs.size() > 0) ? country.regionalBlocs[0].acronym : null
+            NN_RegionalBlocs__c = (country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null
         );
     }
     
@@ -100,7 +100,7 @@ public class NN_CountryService {
         existingCountry.NN_Alpha3Code__c = country.alpha3Code;
         existingCountry.NN_CapitalCity__c = country.capital;
         existingCountry.NN_Region__c = country.region;
-        existingCountry.NN_RegionalBlocs__c = (country.regionalBlocs != null && country.regionalBlocs.size() > 0) ? country.regionalBlocs[0].acronym : null;
+        existingCountry.NN_RegionalBlocs__c = (country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null;
     }
     
     private static Boolean isCountryDataChanged(NN_Country__c existingCountry, CountryData country) {
@@ -108,6 +108,6 @@ public class NN_CountryService {
                existingCountry.NN_Alpha3Code__c != country.alpha3Code || 
                existingCountry.NN_CapitalCity__c != country.capital || 
                existingCountry.NN_Region__c != country.region || 
-               existingCountry.NN_RegionalBlocs__c != ((country.regionalBlocs != null && country.regionalBlocs.size() > 0) ? country.regionalBlocs[0].acronym : null);
+               existingCountry.NN_RegionalBlocs__c != ((country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null);
     }
 }
