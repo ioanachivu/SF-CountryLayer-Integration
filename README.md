@@ -1,4 +1,3 @@
-
 # Salesforce Country Data Integration and Lead Management
 This repository contains the implementation of a Salesforce solution to integrate country data using the CountryLayer API and manage lead information based on country details. The project includes the following key components:
 
