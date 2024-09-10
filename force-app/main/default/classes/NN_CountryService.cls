@@ -2,7 +2,7 @@
  * @description       : This class is responsible for fetching and updating country data in Salesforce.
  * @author            : ioana-a-chivu
  * @group             : 
- * @last modified on  : 09-09-2024
+ * @last modified on  : 09-10-2024
  * @last modified by  : ioana-a-chivu
 **/
 public class NN_CountryService {
@@ -32,9 +32,7 @@ public class NN_CountryService {
             HttpResponse response = http.send(request);
             
             if (response.getStatusCode() == 200) {
-                Map<String, NN_Country__c> existingCountriesMap = new Map<String, NN_Country__c>();
-                List<NN_Country__c> countriesToInsert = new List<NN_Country__c>();
-                List<NN_Country__c> countriesToUpdate = new List<NN_Country__c>();
+                //Deserialize the response body into a list of CountryData objects.
                 List<CountryData> countries = (List<CountryData>) JSON.deserialize(response.getBody(), List<CountryData>.class);
                 
                 // Collect all alpha2Codes into a set
@@ -42,6 +40,10 @@ public class NN_CountryService {
                 for (CountryData country : countries) {
                     alpha2Codes.add(country.alpha2Code);
                 }
+
+                Map<String, NN_Country__c> existingCountriesMap = new Map<String, NN_Country__c>();
+                List<NN_Country__c> countriesToInsert = new List<NN_Country__c>();
+                List<NN_Country__c> countriesToUpdate = new List<NN_Country__c>();
                 
                 // Query existing Country__c records by alpha2code and add to map
                 for (NN_Country__c country : [SELECT Id, Name, NN_Alpha2Code__c, NN_Alpha3Code__c, NN_CapitalCity__c, NN_Region__c, NN_RegionalBlocs__c
@@ -71,6 +73,7 @@ public class NN_CountryService {
                 if (!countriesToInsert.isEmpty()) {
                     insert countriesToInsert;
                     System.debug('countriesToInsert: ' + countriesToInsert);}
+                    
                 if (!countriesToUpdate.isEmpty()) {
                     update countriesToUpdate;
                     System.debug('countriesToUpdate: ' + countriesToUpdate);
@@ -86,20 +89,20 @@ public class NN_CountryService {
     
     private static NN_Country__c createCountryRecord(CountryData country) {
         return new NN_Country__c(
-            Name = country.name,
-            NN_Alpha2Code__c = country.alpha2Code,
-            NN_Alpha3Code__c = country.alpha3Code,
-            NN_CapitalCity__c = country.capital,
-            NN_Region__c = country.region,
+            Name                = country.name,
+            NN_Alpha2Code__c    = country.alpha2Code,
+            NN_Alpha3Code__c    = country.alpha3Code,
+            NN_CapitalCity__c   = country.capital,
+            NN_Region__c        = country.region,
             NN_RegionalBlocs__c = (country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null
         );
     }
     
     private static void updateCountryRecord(NN_Country__c existingCountry, CountryData country) {
-        existingCountry.Name = country.name;
-        existingCountry.NN_Alpha3Code__c = country.alpha3Code;
-        existingCountry.NN_CapitalCity__c = country.capital;
-        existingCountry.NN_Region__c = country.region;
+        existingCountry.Name                = country.name;
+        existingCountry.NN_Alpha3Code__c    = country.alpha3Code;
+        existingCountry.NN_CapitalCity__c   = country.capital;
+        existingCountry.NN_Region__c        = country.region;
         existingCountry.NN_RegionalBlocs__c = (country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null;
     }
     

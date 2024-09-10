@@ -1,8 +1,8 @@
 /**
- * @description       : This is a test class for the NN_LeadHandler class.
+ * @description       : This is a test class for the NN_LeadHandler class and it's associated trigger
  * @author            : ioana-a-chivu
  * @group             : 
- * @last modified on  : 09-09-2024
+ * @last modified on  : 09-10-2024
  * @last modified by  : ioana-a-chivu
 **/
 @isTest

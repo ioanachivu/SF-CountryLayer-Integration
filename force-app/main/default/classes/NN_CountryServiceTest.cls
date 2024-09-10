@@ -2,13 +2,13 @@
  * @description       : Test class for NN_CountryService that tests the updateCountryData method.
  * @author            : ioana-a-chivu
  * @group             : 
- * @last modified on  : 09-08-2024
+ * @last modified on  : 09-10-2024
  * @last modified by  : ioana-a-chivu
 **/
 @IsTest
 public class NN_CountryServiceTest {
     
-    // Mock class to simulate the API response
+    // Mock class for simulating HTTP callouts to the countrylayer API.
     private class CountryServiceMock implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest req) {
             HttpResponse res = new HttpResponse();
@@ -25,7 +25,7 @@ public class NN_CountryServiceTest {
     
     @IsTest
     static void testCountryUpdate() {
-        // Set mock for the HTTP callout
+        // Set mock for the HTTP callout to use the CountryServiceMock class
         Test.setMock(HttpCalloutMock.class, new CountryServiceMock());
         
         // Create existing country to test the update (Czechia with old data)
