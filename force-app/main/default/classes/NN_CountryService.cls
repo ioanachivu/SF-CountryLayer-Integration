@@ -37,21 +37,15 @@ public class NN_CountryService {
                 
                 // Collect all alpha2Codes into a set
                 Set<String> alpha2Codes = new Set<String>();
-                for (CountryData country : countries) {
-                    alpha2Codes.add(country.alpha2Code);
-                }
-
                 Map<String, NN_Country__c> existingCountriesMap = new Map<String, NN_Country__c>();
                 List<NN_Country__c> countriesToInsert = new List<NN_Country__c>();
                 List<NN_Country__c> countriesToUpdate = new List<NN_Country__c>();
+
+                // Collect all alpha2Codes into a set
+                addAlpha2CodesToSet(countries, alpha2Codes);
                 
                 // Query existing Country__c records by alpha2code and add to map
-                for (NN_Country__c country : [SELECT Id, Name, NN_Alpha2Code__c, NN_Alpha3Code__c, NN_CapitalCity__c, NN_Region__c, NN_RegionalBlocs__c
-                                              FROM NN_Country__c 
-                                              WHERE NN_Alpha2Code__c IN :alpha2Codes]) {
-                    existingCountriesMap.put(country.NN_Alpha2Code__c, country);
-                }
-                System.debug('existingCountriesMap: ' + existingCountriesMap);
+                populateExistingCountriesMap(alpha2Codes, existingCountriesMap);
                 
                 // Process and update the country data in Salesforce
                 for (CountryData country : countries) {
@@ -84,6 +78,20 @@ public class NN_CountryService {
             }
         } catch (Exception e) {
             System.debug('Exception: ' + e.getMessage() + ' at line: ' + e.getLineNumber());
+        }
+    }
+
+    private static void addAlpha2CodesToSet(List<CountryData> countries, Set<String> alpha2Codes) {
+        for (CountryData country : countries) {
+            alpha2Codes.add(country.alpha2Code);
+        }
+    }
+
+    private static void populateExistingCountriesMap(Set<String> alpha2Codes, Map<String, NN_Country__c> existingCountriesMap) {
+        for (NN_Country__c country : [SELECT Id, Name, NN_Alpha2Code__c, NN_Alpha3Code__c, NN_CapitalCity__c, NN_Region__c, NN_RegionalBlocs__c
+                                              FROM NN_Country__c 
+                                              WHERE NN_Alpha2Code__c IN :alpha2Codes]) {
+            existingCountriesMap.put(country.NN_Alpha2Code__c, country);
         }
     }
     

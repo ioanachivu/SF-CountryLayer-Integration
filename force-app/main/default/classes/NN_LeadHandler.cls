@@ -13,29 +13,20 @@ public class NN_LeadHandler {
         }
 
         Set<String> countrieSet = new Set<String>();
+        Map<String, NN_Country__c> countryMap = new Map<String, NN_Country__c>();
         
         // Collect unique country names from leads
-        for (Lead lead : leads) {
-            if (lead.Country != null) {
-                countrieSet.add(lead.Country);
-            }
-        }
-        System.debug('countrieSet: ' + countrieSet);
+        addCountriesToSet(leads, countrieSet);
         
         // Query Country__c records based on country names
         if (!countrieSet.isEmpty()) {
             List<NN_Country__c> countryList = [SELECT Name, NN_Alpha2Code__c, NN_Alpha3Code__c, NN_CapitalCity__c, NN_Region__c, NN_RegionalBlocs__c
                                                FROM NN_Country__c 
-                                               WHERE Name IN :countrieSet];
-            System.debug('countryList: ' + countryList);                       
+                                               WHERE Name IN :countrieSet];                      
 
             // Creates a map of country names as key to NN_Country__c objects.
-            Map<String, NN_Country__c> countryMap = new Map<String, NN_Country__c>();
-            
-            for (NN_Country__c country : countryList) {
-                countryMap.put(country.Name, country);
-            }  
-            
+            populateCountryMap(countryList, countryMap);
+
             // Loop through the leads and populate fields
             for (Lead lead : leads) {
                 if (lead.Country != null && countryMap.containsKey(lead.Country)) {
@@ -51,6 +42,20 @@ public class NN_LeadHandler {
             for (Lead lead : leads) {
                 clearFields(lead);
             }
+        }
+    }
+
+    private static void addCountriesToSet(List<Lead> leads, Set<String> countrieSet) {
+        for (Lead lead : leads) {
+            if (lead.Country != null) {
+                countrieSet.add(lead.Country);
+            }
+        }
+    }
+
+    private static void populateCountryMap(List<NN_Country__c> countryList, Map<String, NN_Country__c> countryMap) {
+        for (NN_Country__c country : countryList) {
+            countryMap.put(country.Name, country);
         }
     }
 
