@@ -1,18 +1,25 @@
-# Salesforce DX Project: Next Steps
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+# Salesforce Country Data Integration and Lead Management
+This repository contains the implementation of a Salesforce solution to integrate country data using the CountryLayer API and manage lead information based on country details. The project includes the following key components:
 
-## How Do You Plan to Deploy Your Changes?
+## 1. Country Data Integration
+API Integration: The NN_CountryService class fetches country information from the CountryLayer API (using a Named Credential), including fields such as Name, Alpha2Code, Alpha3Code, Capital City, Region, and RegionalBlocs.
+Daily Update: A Schedulable class (NN_CountryServiceScheduler) ensures country data is updated daily. Any changes in the API are reflected in Salesforce.
+Test Class: NN_CountryServiceTest mocks the API response and verifies both the insert and update logic for country records.
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+## 2. Lead Management Trigger
+A lead trigger (NN_LeadTrigger) automatically populates lead records with country-related data based on the lead's country.
+The NN_LeadHandler class fetches the country data from Salesforce and fills in fields like Alpha2Code, Alpha3Code, Capital City, Region, and RegionalBlocs.
+Test coverage is provided in NN_LeadHandlerTest.
 
-## Configure Your Salesforce DX Project
+## 3. Validation Rule
+A validation rule (PreventOwnerChange) ensures that the Lead Source, Country, and Number of Employees fields must be filled in before the Lead Owner can be changed. Exceptions are made for specific profiles (System Administrator and Contract Manager).
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+## 4. Flow
+A flow tracks and records the timestamp when a Lead Owner is assigned, storing the date in the Owner Since field.
 
-## Read All About It
+## 5. Deployment
+All metadata, including custom objects, validation rules, triggers, and classes, are ready for deployment and can be found in the repository.
 
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+## 6. Testing
+The solution includes comprehensive unit tests for API callouts, triggers, and validation rules, ensuring the system is fully testable and ready for deployment.
