@@ -2,7 +2,7 @@
  * @description       : This class is responsible for fetching and updating country data in Salesforce.
  * @author            : ioana-a-chivu
  * @group             : 
- * @last modified on  : 09-10-2024
+ * @last modified on  : 09-16-2024
  * @last modified by  : ioana-a-chivu
 **/
 public class NN_CountryService {
@@ -35,7 +35,6 @@ public class NN_CountryService {
                 //Deserialize the response body into a list of CountryData objects.
                 List<CountryData> countries = (List<CountryData>) JSON.deserialize(response.getBody(), List<CountryData>.class);
                 
-                // Collect all alpha2Codes into a set
                 Set<String> alpha2Codes = new Set<String>();
                 Map<String, NN_Country__c> existingCountriesMap = new Map<String, NN_Country__c>();
                 List<NN_Country__c> countriesToInsert = new List<NN_Country__c>();
@@ -81,12 +80,14 @@ public class NN_CountryService {
         }
     }
 
+    //Adds the alpha2 codes from the given list of CountryData objects to the provided set.
     private static void addAlpha2CodesToSet(List<CountryData> countries, Set<String> alpha2Codes) {
         for (CountryData country : countries) {
             alpha2Codes.add(country.alpha2Code);
         }
     }
 
+    //Populates the existing countries map with the specified alpha2 codes.
     private static void populateExistingCountriesMap(Set<String> alpha2Codes, Map<String, NN_Country__c> existingCountriesMap) {
         for (NN_Country__c country : [SELECT Id, Name, NN_Alpha2Code__c, NN_Alpha3Code__c, NN_CapitalCity__c, NN_Region__c, NN_RegionalBlocs__c
                                               FROM NN_Country__c 
@@ -95,6 +96,7 @@ public class NN_CountryService {
         }
     }
     
+    //Creates a new NN_Country__c record based on the provided CountryData object.
     private static NN_Country__c createCountryRecord(CountryData country) {
         return new NN_Country__c(
             Name                = country.name,
@@ -106,6 +108,7 @@ public class NN_CountryService {
         );
     }
     
+    //Updates the fields of an existing NN_Country__c record with the values from a CountryData object.
     private static void updateCountryRecord(NN_Country__c existingCountry, CountryData country) {
         existingCountry.Name                = country.name;
         existingCountry.NN_Alpha3Code__c    = country.alpha3Code;
@@ -114,6 +117,7 @@ public class NN_CountryService {
         existingCountry.NN_RegionalBlocs__c = (country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null;
     }
     
+    // Determines if the country data has changed.
     private static Boolean isCountryDataChanged(NN_Country__c existingCountry, CountryData country) {
         return existingCountry.Name != country.name || 
                existingCountry.NN_Alpha3Code__c != country.alpha3Code || 
