@@ -2,10 +2,10 @@
  * @description       : This class is responsible for fetching and updating country data in Salesforce.
  * @author            : ioana-a-chivu
  * @group             : 
- * @last modified on  : 09-16-2024
+ * @last modified on  : 10-29-2024
  * @last modified by  : ioana-a-chivu
 **/
-public class NN_CountryService {
+public class CM_CountryService {
   
     // Inner class to map the API response
     public class CountryData {
@@ -36,9 +36,9 @@ public class NN_CountryService {
                 List<CountryData> countries = (List<CountryData>) JSON.deserialize(response.getBody(), List<CountryData>.class);
                 
                 Set<String> alpha2Codes = new Set<String>();
-                Map<String, NN_Country__c> existingCountriesMap = new Map<String, NN_Country__c>();
-                List<NN_Country__c> countriesToInsert = new List<NN_Country__c>();
-                List<NN_Country__c> countriesToUpdate = new List<NN_Country__c>();
+                Map<String, CM_Country__c> existingCountriesMap = new Map<String, CM_Country__c>();
+                List<CM_Country__c> countriesToInsert = new List<CM_Country__c>();
+                List<CM_Country__c> countriesToUpdate = new List<CM_Country__c>();
 
                 // Collect all alpha2Codes into a set
                 addAlpha2CodesToSet(countries, alpha2Codes);
@@ -48,7 +48,7 @@ public class NN_CountryService {
                 
                 // Process and update the country data in Salesforce
                 for (CountryData country : countries) {
-                    NN_Country__c existingCountry = existingCountriesMap.get(country.alpha2Code);
+                    CM_Country__c existingCountry = existingCountriesMap.get(country.alpha2Code);
                     
                     if (existingCountry == null) {
                         // Insert new record
@@ -88,41 +88,41 @@ public class NN_CountryService {
     }
 
     //Populates the existing countries map with the specified alpha2 codes.
-    private static void populateExistingCountriesMap(Set<String> alpha2Codes, Map<String, NN_Country__c> existingCountriesMap) {
-        for (NN_Country__c country : [SELECT Id, Name, NN_Alpha2Code__c, NN_Alpha3Code__c, NN_CapitalCity__c, NN_Region__c, NN_RegionalBlocs__c
-                                              FROM NN_Country__c 
-                                              WHERE NN_Alpha2Code__c IN :alpha2Codes]) {
-            existingCountriesMap.put(country.NN_Alpha2Code__c, country);
+    private static void populateExistingCountriesMap(Set<String> alpha2Codes, Map<String, CM_Country__c> existingCountriesMap) {
+        for (CM_Country__c country : [SELECT Id, Name, CM_Alpha2Code__c, CM_Alpha3Code__c, CM_CapitalCity__c, CM_Region__c, CM_RegionalBlocs__c
+                                              FROM CM_Country__c 
+                                              WHERE CM_Alpha2Code__c IN :alpha2Codes]) {
+            existingCountriesMap.put(country.CM_Alpha2Code__c, country);
         }
     }
     
-    //Creates a new NN_Country__c record based on the provided CountryData object.
-    private static NN_Country__c createCountryRecord(CountryData country) {
-        return new NN_Country__c(
+    //Creates a new CM_Country__c record based on the provided CountryData object.
+    private static CM_Country__c createCountryRecord(CountryData country) {
+        return new CM_Country__c(
             Name                = country.name,
-            NN_Alpha2Code__c    = country.alpha2Code,
-            NN_Alpha3Code__c    = country.alpha3Code,
-            NN_CapitalCity__c   = country.capital,
-            NN_Region__c        = country.region,
-            NN_RegionalBlocs__c = (country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null
+            CM_Alpha2Code__c    = country.alpha2Code,
+            CM_Alpha3Code__c    = country.alpha3Code,
+            CM_CapitalCity__c   = country.capital,
+            CM_Region__c        = country.region,
+            CM_RegionalBlocs__c = (country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null
         );
     }
     
-    //Updates the fields of an existing NN_Country__c record with the values from a CountryData object.
-    private static void updateCountryRecord(NN_Country__c existingCountry, CountryData country) {
+    //Updates the fields of an existing CM_Country__c record with the values from a CountryData object.
+    private static void updateCountryRecord(CM_Country__c existingCountry, CountryData country) {
         existingCountry.Name                = country.name;
-        existingCountry.NN_Alpha3Code__c    = country.alpha3Code;
-        existingCountry.NN_CapitalCity__c   = country.capital;
-        existingCountry.NN_Region__c        = country.region;
-        existingCountry.NN_RegionalBlocs__c = (country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null;
+        existingCountry.CM_Alpha3Code__c    = country.alpha3Code;
+        existingCountry.CM_CapitalCity__c   = country.capital;
+        existingCountry.CM_Region__c        = country.region;
+        existingCountry.CM_RegionalBlocs__c = (country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null;
     }
     
     // Determines if the country data has changed.
-    private static Boolean isCountryDataChanged(NN_Country__c existingCountry, CountryData country) {
+    private static Boolean isCountryDataChanged(CM_Country__c existingCountry, CountryData country) {
         return existingCountry.Name != country.name || 
-               existingCountry.NN_Alpha3Code__c != country.alpha3Code || 
-               existingCountry.NN_CapitalCity__c != country.capital || 
-               existingCountry.NN_Region__c != country.region || 
-               existingCountry.NN_RegionalBlocs__c != ((country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null);
+               existingCountry.CM_Alpha3Code__c != country.alpha3Code || 
+               existingCountry.CM_CapitalCity__c != country.capital || 
+               existingCountry.CM_Region__c != country.region || 
+               existingCountry.CM_RegionalBlocs__c != ((country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null);
     }
 }

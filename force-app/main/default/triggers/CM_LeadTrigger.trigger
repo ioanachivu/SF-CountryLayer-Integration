@@ -2,11 +2,11 @@
  * @description       : 
  * @author            : ioana-a-chivu
  * @group             : 
- * @last modified on  : 09-16-2024
+ * @last modified on  : 10-29-2024
  * @last modified by  : ioana-a-chivu
 **/
-trigger NN_LeadTrigger on Lead (before insert, before update) {
+trigger CM_LeadTrigger on Lead (before insert, before update) {
     if (Trigger.isBefore) {
-        NN_LeadHandler.populateLeadCountryInfo(Trigger.new);
+        CM_LeadHandler.populateLeadCountryInfo(Trigger.new);
     }
 }

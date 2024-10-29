@@ -1,12 +1,12 @@
 /**
- * @description       : Test class for NN_CountryService that tests the updateCountryData method.
+ * @description       : Test class for CM_CountryService that tests the updateCountryData method.
  * @author            : ioana-a-chivu
  * @group             : 
- * @last modified on  : 09-10-2024
+ * @last modified on  : 10-29-2024
  * @last modified by  : ioana-a-chivu
 **/
 @IsTest
-public class NN_CountryServiceTest {
+public class CM_CountryServiceTest {
     
     // Mock class for simulating HTTP callouts to the countrylayer API.
     private class CountryServiceMock implements HttpCalloutMock {
@@ -29,37 +29,37 @@ public class NN_CountryServiceTest {
         Test.setMock(HttpCalloutMock.class, new CountryServiceMock());
         
         // Create existing country to test the update (Czechia with old data)
-        NN_Country__c existingCountry = new NN_Country__c(
+        CM_Country__c existingCountry = new CM_Country__c(
             Name = 'Czechia',
-            NN_Alpha2Code__c = 'CZ',
-            NN_Alpha3Code__c = 'CZE',
-            NN_CapitalCity__c = 'Old Capital',
-            NN_Region__c = 'Old Region',
-            NN_RegionalBlocs__c = 'Old Bloc'
+            CM_Alpha2Code__c = 'CZ',
+            CM_Alpha3Code__c = 'CZE',
+            CM_CapitalCity__c = 'Old Capital',
+            CM_Region__c = 'Old Region',
+            CM_RegionalBlocs__c = 'Old Bloc'
         );
         insert existingCountry;
 
         // Call the method to update country data
         Test.startTest();
-        NN_CountryService.updateCountryData();
+        CM_CountryService.updateCountryData();
         Test.stopTest();
 
         // Verify that the existing country (Czechia) was updated
-        NN_Country__c updatedCountry = [SELECT Name, NN_Alpha2Code__c, NN_Alpha3Code__c, NN_CapitalCity__c, NN_Region__c, NN_RegionalBlocs__c
-                                        FROM NN_Country__c WHERE NN_Alpha2Code__c = 'CZ' LIMIT 1];
+        CM_Country__c updatedCountry = [SELECT Name, CM_Alpha2Code__c, CM_Alpha3Code__c, CM_CapitalCity__c, CM_Region__c, CM_RegionalBlocs__c
+                                        FROM CM_Country__c WHERE CM_Alpha2Code__c = 'CZ' LIMIT 1];
         System.assertEquals('Czechia', updatedCountry.Name);
-        System.assertEquals('CZE', updatedCountry.NN_Alpha3Code__c);
-        System.assertEquals('Prague', updatedCountry.NN_CapitalCity__c);
-        System.assertEquals('Europe', updatedCountry.NN_Region__c);
-        System.assertEquals('EU', updatedCountry.NN_RegionalBlocs__c);
+        System.assertEquals('CZE', updatedCountry.CM_Alpha3Code__c);
+        System.assertEquals('Prague', updatedCountry.CM_CapitalCity__c);
+        System.assertEquals('Europe', updatedCountry.CM_Region__c);
+        System.assertEquals('EU', updatedCountry.CM_RegionalBlocs__c);
 
         // Verify that a new country (Romania) was inserted
-        NN_Country__c newCountry = [SELECT Name, NN_Alpha2Code__c, NN_Alpha3Code__c, NN_CapitalCity__c, NN_Region__c, NN_RegionalBlocs__c
-                                    FROM NN_Country__c WHERE NN_Alpha2Code__c = 'RO' LIMIT 1];
+        CM_Country__c newCountry = [SELECT Name, CM_Alpha2Code__c, CM_Alpha3Code__c, CM_CapitalCity__c, CM_Region__c, CM_RegionalBlocs__c
+                                    FROM CM_Country__c WHERE CM_Alpha2Code__c = 'RO' LIMIT 1];
         System.assertEquals('Romania', newCountry.Name);
-        System.assertEquals('ROU', newCountry.NN_Alpha3Code__c);
-        System.assertEquals('Bucharest', newCountry.NN_CapitalCity__c);
-        System.assertEquals('Europe', newCountry.NN_Region__c);
-        System.assertEquals('EU', newCountry.NN_RegionalBlocs__c);
+        System.assertEquals('ROU', newCountry.CM_Alpha3Code__c);
+        System.assertEquals('Bucharest', newCountry.CM_CapitalCity__c);
+        System.assertEquals('Europe', newCountry.CM_Region__c);
+        System.assertEquals('EU', newCountry.CM_RegionalBlocs__c);
     }
 }
