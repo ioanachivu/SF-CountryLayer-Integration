@@ -37,8 +37,7 @@ public class CM_CountryService {
                 
                 Set<String> alpha2Codes = new Set<String>();
                 Map<String, CM_Country__c> existingCountriesMap = new Map<String, CM_Country__c>();
-                List<CM_Country__c> countriesToInsert = new List<CM_Country__c>();
-                List<CM_Country__c> countriesToUpdate = new List<CM_Country__c>();
+                List<CM_Country__c> countriesToUpsert = new List<CM_Country__c>();
 
                 // Collect all alpha2Codes into a set
                 addAlpha2CodesToSet(countries, alpha2Codes);
@@ -52,31 +51,27 @@ public class CM_CountryService {
                     
                     if (existingCountry == null) {
                         // Insert new record
-                        countriesToInsert.add(createCountryRecord(country));
+                        countriesToUpsert.add(createCountryRecord(country));
                     } else {
                         // Update existing record if data has changed
                         if (isCountryDataChanged(existingCountry, country)) {
                             updateCountryRecord(existingCountry, country);
-                            countriesToUpdate.add(existingCountry);
+                            countriesToUpsert.add(existingCountry);
                         }
                     }
                 }
                 
                 // Perform DML operations
-                if (!countriesToInsert.isEmpty()) {
-                    insert countriesToInsert;
-                    System.debug('countriesToInsert: ' + countriesToInsert);}
-                    
-                if (!countriesToUpdate.isEmpty()) {
-                    update countriesToUpdate;
-                    System.debug('countriesToUpdate: ' + countriesToUpdate);
-                }
-                
+                if (!countriesToUpsert.isEmpty()) {
+                    insert countriesToUpsert; 
+                } 
             } else {
-                System.debug('Failed to fetch country data: ' + response.getBody());
+                Error_Log__c errLog = ErrorLog.logError('CM_CountryService', 'updateCountryData', response.getBody(), null, 71, null);
+                insert errLog;
             }
         } catch (Exception e) {
-            System.debug('Exception: ' + e.getMessage() + ' at line: ' + e.getLineNumber());
+            Error_Log__c errLog = ErrorLog.logError('CM_CountryService', 'updateCountryData', ex.getMessage(), ex.getStackTraceString(), ex.getLineNumber(), null);
+            insert errLog;
         }
     }
 
