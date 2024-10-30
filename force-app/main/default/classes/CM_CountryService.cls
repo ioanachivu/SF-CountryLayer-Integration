@@ -2,7 +2,7 @@
  * @description       : This class is responsible for fetching and updating country data in Salesforce.
  * @author            : ioana-a-chivu
  * @group             : 
- * @last modified on  : 10-29-2024
+ * @last modified on  : 10-30-2024
  * @last modified by  : ioana-a-chivu
 **/
 public class CM_CountryService {
@@ -63,7 +63,7 @@ public class CM_CountryService {
                 
                 // Perform DML operations
                 if (!countriesToUpsert.isEmpty()) {
-                    insert countriesToUpsert; 
+                    upsert countriesToUpsert; 
                 } 
             } else {
                 Error_Log__c errLog = ErrorLog.logError('CM_CountryService', 'updateCountryData', response.getBody(), null, 71, null);
