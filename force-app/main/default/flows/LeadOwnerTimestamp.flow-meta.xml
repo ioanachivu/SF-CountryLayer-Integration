@@ -29,7 +29,7 @@
         <locationX>176</locationX>
         <locationY>287</locationY>
         <inputAssignments>
-            <field>CM_OwnerSince__c</field>
+            <field>OwnerSince__c</field>
             <value>
                 <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>

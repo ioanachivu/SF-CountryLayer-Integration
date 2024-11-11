@@ -2,10 +2,10 @@
  * @description       : provides methods to populate country information on Leads.
  * @author            : ioana-a-chivu
  * @group             : 
- * @last modified on  : 10-29-2024
+ * @last modified on  : 11-11-2024
  * @last modified by  : ioana-a-chivu
 **/
-public class CM_LeadHandler {
+public class LeadHandler {
 
     public static void populateLeadCountryInfo(List<Lead> leads) {
         if (leads == null || leads.isEmpty()) {
@@ -13,25 +13,25 @@ public class CM_LeadHandler {
         }
 
         Set<String> countrySet = new Set<String>();
-        Map<String, CM_Country__c> countryMap = new Map<String, CM_Country__c>();
+        Map<String, Country__c> countryMap = new Map<String, Country__c>();
         
         // Collect country names from leads and add to set
         addCountriesToSet(leads, countrySet);
         
         // Query Country__c records based on country names
         if (!countrySet.isEmpty()) {
-            List<CM_Country__c> countryList = [SELECT Name, CM_Alpha2Code__c, CM_Alpha3Code__c, CM_CapitalCity__c, CM_Region__c, CM_RegionalBlocs__c
-                                               FROM CM_Country__c 
+            List<Country__c> countryList = [SELECT Name, Alpha2Code__c, Alpha3Code__c, CapitalCity__c, Region__c, RegionalBlocs__c
+                                               FROM Country__c 
                                                WHERE Name IN :countrySet];                      
 
-            // Creates a map of country names as key to CM_Country__c objects.
+            // Creates a map of country names as key to Country__c objects.
             populateCountryMap(countryList, countryMap);
 
             // Loop through the leads and populate fields
             for (Lead lead : leads) {
-                //if lead's country exists in the countryMap, we get CM_Country__c object and populate lead fields
+                //if lead's country exists in the countryMap, we get Country__c object and populate lead fields
                 if (lead.Country != null && countryMap.containsKey(lead.Country)) {
-                    CM_Country__c country = countryMap.get(lead.Country);
+                    Country__c country = countryMap.get(lead.Country);
                     populateLeadFields(lead, country);
                 } else {
                     // Handle case where country is spelled wrong / not found
@@ -56,28 +56,28 @@ public class CM_LeadHandler {
     }
 
     //Populates a map with country records.
-    private static void populateCountryMap(List<CM_Country__c> countryList, Map<String, CM_Country__c> countryMap) {
-        for (CM_Country__c country : countryList) {
+    private static void populateCountryMap(List<Country__c> countryList, Map<String, Country__c> countryMap) {
+        for (Country__c country : countryList) {
             countryMap.put(country.Name, country);
         }
     }
 
     // Method to populate lead fields with country info
-    private static void populateLeadFields(Lead lead, CM_Country__c country) {
+    private static void populateLeadFields(Lead lead, Country__c country) {
         lead.Country                    = country.Name;
-        lead.CM_CountryAlpha2Code__c    = country.CM_Alpha2Code__c;
-        lead.CM_CountryAlpha3Code__c    = country.CM_Alpha3Code__c;
-        lead.CM_CountryCapitalCity__c   = country.CM_CapitalCity__c;
-        lead.CM_CountryRegion__c        = country.CM_Region__c;
-        lead.CM_CountryRegionalBlocs__c = country.CM_RegionalBlocs__c;
+        lead.CountryAlpha2Code__c    = country.Alpha2Code__c;
+        lead.CountryAlpha3Code__c    = country.Alpha3Code__c;
+        lead.CountryCapitalCity__c   = country.CapitalCity__c;
+        lead.CountryRegion__c        = country.Region__c;
+        lead.CountryRegionalBlocs__c = country.RegionalBlocs__c;
     }
 
     // Method to clear lead fields
     private static void clearFields(Lead lead) {
-        lead.CM_CountryAlpha2Code__c    = null;
-        lead.CM_CountryAlpha3Code__c    = null;
-        lead.CM_CountryCapitalCity__c   = null;
-        lead.CM_CountryRegion__c        = null;
-        lead.CM_CountryRegionalBlocs__c = null;
+        lead.CountryAlpha2Code__c    = null;
+        lead.CountryAlpha3Code__c    = null;
+        lead.CountryCapitalCity__c   = null;
+        lead.CountryRegion__c        = null;
+        lead.CountryRegionalBlocs__c = null;
     }
 }

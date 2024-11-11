@@ -2,10 +2,10 @@
  * @description       : 
  * @author            : ioana-a-chivu
  * @group             : 
- * @last modified on  : 10-29-2024
+ * @last modified on  : 11-11-2024
  * @last modified by  : ioana-a-chivu
 **/
-public without sharing class CM_ErrorLog {
+public without sharing class ErrorLog {
 
     public static Error_Log__c logError(String ClassName, String FunctionName, String ErrorMessage, String StackTrace, Integer LineNumber, String recordId) {
 

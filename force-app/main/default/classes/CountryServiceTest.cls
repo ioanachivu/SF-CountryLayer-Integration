@@ -1,12 +1,12 @@
 /**
- * @description       : Test class for CM_CountryService that tests the updateCountryData method.
+ * @description       : Test class for CountryService that tests the updateCountryData method.
  * @author            : ioana-a-chivu
  * @group             : 
- * @last modified on  : 10-29-2024
+ * @last modified on  : 11-11-2024
  * @last modified by  : ioana-a-chivu
 **/
 @IsTest
-public class CM_CountryServiceTest {
+public class CountryServiceTest {
     
     // Mock class for simulating HTTP callouts to the countrylayer API.
     private class CountryServiceMock implements HttpCalloutMock {
@@ -29,37 +29,37 @@ public class CM_CountryServiceTest {
         Test.setMock(HttpCalloutMock.class, new CountryServiceMock());
         
         // Create existing country to test the update (Czechia with old data)
-        CM_Country__c existingCountry = new CM_Country__c(
+        Country__c existingCountry = new Country__c(
             Name = 'Czechia',
-            CM_Alpha2Code__c = 'CZ',
-            CM_Alpha3Code__c = 'CZE',
-            CM_CapitalCity__c = 'Old Capital',
-            CM_Region__c = 'Old Region',
-            CM_RegionalBlocs__c = 'Old Bloc'
+            Alpha2Code__c = 'CZ',
+            Alpha3Code__c = 'CZE',
+            CapitalCity__c = 'Old Capital',
+            Region__c = 'Old Region',
+            RegionalBlocs__c = 'Old Bloc'
         );
         insert existingCountry;
 
         // Call the method to update country data
         Test.startTest();
-        CM_CountryService.updateCountryData();
+        CountryService.updateCountryData();
         Test.stopTest();
 
         // Verify that the existing country (Czechia) was updated
-        CM_Country__c updatedCountry = [SELECT Name, CM_Alpha2Code__c, CM_Alpha3Code__c, CM_CapitalCity__c, CM_Region__c, CM_RegionalBlocs__c
-                                        FROM CM_Country__c WHERE CM_Alpha2Code__c = 'CZ' LIMIT 1];
+        Country__c updatedCountry = [SELECT Name, Alpha2Code__c, Alpha3Code__c, CapitalCity__c, Region__c, RegionalBlocs__c
+                                        FROM Country__c WHERE Alpha2Code__c = 'CZ' LIMIT 1];
         System.assertEquals('Czechia', updatedCountry.Name);
-        System.assertEquals('CZE', updatedCountry.CM_Alpha3Code__c);
-        System.assertEquals('Prague', updatedCountry.CM_CapitalCity__c);
-        System.assertEquals('Europe', updatedCountry.CM_Region__c);
-        System.assertEquals('EU', updatedCountry.CM_RegionalBlocs__c);
+        System.assertEquals('CZE', updatedCountry.Alpha3Code__c);
+        System.assertEquals('Prague', updatedCountry.CapitalCity__c);
+        System.assertEquals('Europe', updatedCountry.Region__c);
+        System.assertEquals('EU', updatedCountry.RegionalBlocs__c);
 
         // Verify that a new country (Romania) was inserted
-        CM_Country__c newCountry = [SELECT Name, CM_Alpha2Code__c, CM_Alpha3Code__c, CM_CapitalCity__c, CM_Region__c, CM_RegionalBlocs__c
-                                    FROM CM_Country__c WHERE CM_Alpha2Code__c = 'RO' LIMIT 1];
+        Country__c newCountry = [SELECT Name, Alpha2Code__c, Alpha3Code__c, CapitalCity__c, Region__c, RegionalBlocs__c
+                                    FROM Country__c WHERE Alpha2Code__c = 'RO' LIMIT 1];
         System.assertEquals('Romania', newCountry.Name);
-        System.assertEquals('ROU', newCountry.CM_Alpha3Code__c);
-        System.assertEquals('Bucharest', newCountry.CM_CapitalCity__c);
-        System.assertEquals('Europe', newCountry.CM_Region__c);
-        System.assertEquals('EU', newCountry.CM_RegionalBlocs__c);
+        System.assertEquals('ROU', newCountry.Alpha3Code__c);
+        System.assertEquals('Bucharest', newCountry.CapitalCity__c);
+        System.assertEquals('Europe', newCountry.Region__c);
+        System.assertEquals('EU', newCountry.RegionalBlocs__c);
     }
 }

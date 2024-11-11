@@ -2,10 +2,10 @@
  * @description       : This class is responsible for fetching and updating country data in Salesforce.
  * @author            : ioana-a-chivu
  * @group             : 
- * @last modified on  : 10-30-2024
+ * @last modified on  : 11-11-2024
  * @last modified by  : ioana-a-chivu
 **/
-public class CM_CountryService {
+public class CountryService {
   
     // Inner class to map the API response
     public class CountryData {
@@ -36,8 +36,8 @@ public class CM_CountryService {
                 List<CountryData> countries = (List<CountryData>) JSON.deserialize(response.getBody(), List<CountryData>.class);
                 
                 Set<String> alpha2Codes = new Set<String>();
-                Map<String, CM_Country__c> existingCountriesMap = new Map<String, CM_Country__c>();
-                List<CM_Country__c> countriesToUpsert = new List<CM_Country__c>();
+                Map<String, Country__c> existingCountriesMap = new Map<String, Country__c>();
+                List<Country__c> countriesToUpsert = new List<Country__c>();
 
                 // Collect all alpha2Codes into a set
                 addAlpha2CodesToSet(countries, alpha2Codes);
@@ -47,7 +47,7 @@ public class CM_CountryService {
                 
                 // Process and update the country data in Salesforce
                 for (CountryData country : countries) {
-                    CM_Country__c existingCountry = existingCountriesMap.get(country.alpha2Code);
+                    Country__c existingCountry = existingCountriesMap.get(country.alpha2Code);
                     
                     if (existingCountry == null) {
                         // Insert new record
@@ -66,11 +66,11 @@ public class CM_CountryService {
                     upsert countriesToUpsert; 
                 } 
             } else {
-                Error_Log__c errLog = ErrorLog.logError('CM_CountryService', 'updateCountryData', response.getBody(), null, 71, null);
+                Error_Log__c errLog = ErrorLog.logError('CountryService', 'updateCountryData', response.getBody(), null, 71, null);
                 insert errLog;
             }
         } catch (Exception e) {
-            Error_Log__c errLog = ErrorLog.logError('CM_CountryService', 'updateCountryData', ex.getMessage(), ex.getStackTraceString(), ex.getLineNumber(), null);
+            Error_Log__c errLog = ErrorLog.logError('CountryService', 'updateCountryData', ex.getMessage(), ex.getStackTraceString(), ex.getLineNumber(), null);
             insert errLog;
         }
     }
@@ -83,41 +83,41 @@ public class CM_CountryService {
     }
 
     //Populates the existing countries map with the specified alpha2 codes.
-    private static void populateExistingCountriesMap(Set<String> alpha2Codes, Map<String, CM_Country__c> existingCountriesMap) {
-        for (CM_Country__c country : [SELECT Id, Name, CM_Alpha2Code__c, CM_Alpha3Code__c, CM_CapitalCity__c, CM_Region__c, CM_RegionalBlocs__c
-                                              FROM CM_Country__c 
-                                              WHERE CM_Alpha2Code__c IN :alpha2Codes]) {
-            existingCountriesMap.put(country.CM_Alpha2Code__c, country);
+    private static void populateExistingCountriesMap(Set<String> alpha2Codes, Map<String, Country__c> existingCountriesMap) {
+        for (Country__c country : [SELECT Id, Name, Alpha2Code__c, Alpha3Code__c, CapitalCity__c, Region__c, RegionalBlocs__c
+                                              FROM Country__c 
+                                              WHERE Alpha2Code__c IN :alpha2Codes]) {
+            existingCountriesMap.put(country.Alpha2Code__c, country);
         }
     }
     
-    //Creates a new CM_Country__c record based on the provided CountryData object.
-    private static CM_Country__c createCountryRecord(CountryData country) {
-        return new CM_Country__c(
+    //Creates a new Country__c record based on the provided CountryData object.
+    private static Country__c createCountryRecord(CountryData country) {
+        return new Country__c(
             Name                = country.name,
-            CM_Alpha2Code__c    = country.alpha2Code,
-            CM_Alpha3Code__c    = country.alpha3Code,
-            CM_CapitalCity__c   = country.capital,
-            CM_Region__c        = country.region,
-            CM_RegionalBlocs__c = (country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null
+            Alpha2Code__c    = country.alpha2Code,
+            Alpha3Code__c    = country.alpha3Code,
+            CapitalCity__c   = country.capital,
+            Region__c        = country.region,
+            RegionalBlocs__c = (country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null
         );
     }
     
-    //Updates the fields of an existing CM_Country__c record with the values from a CountryData object.
-    private static void updateCountryRecord(CM_Country__c existingCountry, CountryData country) {
+    //Updates the fields of an existing Country__c record with the values from a CountryData object.
+    private static void updateCountryRecord(Country__c existingCountry, CountryData country) {
         existingCountry.Name                = country.name;
-        existingCountry.CM_Alpha3Code__c    = country.alpha3Code;
-        existingCountry.CM_CapitalCity__c   = country.capital;
-        existingCountry.CM_Region__c        = country.region;
-        existingCountry.CM_RegionalBlocs__c = (country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null;
+        existingCountry.Alpha3Code__c    = country.alpha3Code;
+        existingCountry.CapitalCity__c   = country.capital;
+        existingCountry.Region__c        = country.region;
+        existingCountry.RegionalBlocs__c = (country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null;
     }
     
     // Determines if the country data has changed.
-    private static Boolean isCountryDataChanged(CM_Country__c existingCountry, CountryData country) {
+    private static Boolean isCountryDataChanged(Country__c existingCountry, CountryData country) {
         return existingCountry.Name != country.name || 
-               existingCountry.CM_Alpha3Code__c != country.alpha3Code || 
-               existingCountry.CM_CapitalCity__c != country.capital || 
-               existingCountry.CM_Region__c != country.region || 
-               existingCountry.CM_RegionalBlocs__c != ((country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null);
+               existingCountry.Alpha3Code__c != country.alpha3Code || 
+               existingCountry.CapitalCity__c != country.capital || 
+               existingCountry.Region__c != country.region || 
+               existingCountry.RegionalBlocs__c != ((country.regionalBlocs != null) ? country.regionalBlocs[0].acronym : null);
     }
 }

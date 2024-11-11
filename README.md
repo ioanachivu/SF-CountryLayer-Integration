@@ -2,14 +2,14 @@
 This repository contains the implementation of a Salesforce solution to integrate country data using the CountryLayer API and manage lead information based on country details. The project includes the following key components:
 
 ## 1. Country Data Integration
-API Integration: The CM_CountryService class fetches country information from the CountryLayer API (using a Named Credential), including fields such as Name, Alpha2Code, Alpha3Code, Capital City, Region, and RegionalBlocs.
-Daily Update: A Schedulable class (CM_CountryServiceScheduler) ensures country data is updated daily. Any changes in the API are reflected in Salesforce.
-Test Class: CM_CountryServiceTest mocks the API response and verifies both the insert and update logic for country records.
+API Integration: The CountryService class fetches country information from the CountryLayer API (using a Named Credential), including fields such as Name, Alpha2Code, Alpha3Code, Capital City, Region, and RegionalBlocs.
+Daily Update: A Schedulable class (CountryServiceScheduler) ensures country data is updated daily. Any changes in the API are reflected in Salesforce.
+Test Class: CountryServiceTest mocks the API response and verifies both the insert and update logic for country records.
 
 ## 2. Lead Management Trigger
-A lead trigger (CM_LeadTrigger) automatically populates lead records with country-related data based on the lead's country.
-The CM_LeadHandler class fetches the country data from Salesforce and fills in fields like Alpha2Code, Alpha3Code, Capital City, Region, and RegionalBlocs.
-Test coverage is provided in CM_LeadHandlerTest.
+A lead trigger (LeadTrigger) automatically populates lead records with country-related data based on the lead's country.
+The LeadHandler class fetches the country data from Salesforce and fills in fields like Alpha2Code, Alpha3Code, Capital City, Region, and RegionalBlocs.
+Test coverage is provided in LeadHandlerTest.
 
 ## 3. Validation Rule
 A validation rule (PreventOwnerChange) ensures that the Lead Source, Country, and Number of Employees fields must be filled in before the Lead Owner can be changed. Exceptions are made for specific profiles (System Administrator and Contract Manager).
